@@ -118,6 +118,8 @@ module MassiveRecord
           if type == :string && !(value.nil? || value == @@encoded_nil_value)
             value
           else
+            # Truncate float if the field type is integer otherwise we will get an error on decoding
+            value = value.to_i if type == :integer && value.is_a?(Float)
             coder.dump(value)
           end
         end

@@ -158,7 +158,14 @@ describe MassiveRecord::ORM::Schema::Field do
       @subject.decode("").should be_nil
       @subject.decode(nil).should be_nil
     end
-    
+
+    it "should truncate a float value when storing as integer" do
+      @subject = MassiveRecord::ORM::Schema::Field.new(:name => :code, :type => :integer)
+      @subject.decode(@subject.encode(12.345)).should == 12
+      @subject.decode("").should be_nil
+      @subject.decode(nil).should be_nil
+    end
+
     it "should decode a date type" do
       today = Date.today
       @subject = MassiveRecord::ORM::Schema::Field.new(:name => :created_at, :type => :date)
