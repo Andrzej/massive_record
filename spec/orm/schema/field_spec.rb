@@ -143,13 +143,13 @@ describe MassiveRecord::ORM::Schema::Field do
       @subject.decode(nil).should be_nil
     end
 
-		it "should decode a bignum value" do
-			@subject = MassiveRecord::ORM::Schema::Field.new(:name => :status, :type => :integer)
-			@subject.decode((2<<80).to_s).should == 2<<80
-			@subject.decode((2<<80).to_s).should == 2<<80
-			@subject.decode("").should be_nil
-			@subject.decode(nil).should be_nil
-		end
+    it "should decode a bignum value" do
+      @subject = MassiveRecord::ORM::Schema::Field.new(:name => :status, :type => :integer)
+      @subject.decode((2<<80).to_s).should == 2<<80
+      @subject.decode((2<<80).to_s).should == 2<<80
+      @subject.decode("").should be_nil
+      @subject.decode(nil).should be_nil
+    end
 
 
     it "should decode an float value" do
