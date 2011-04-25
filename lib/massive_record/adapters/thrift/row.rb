@@ -92,23 +92,7 @@ module MassiveRecord
         # java api instead of thrift.
         #
         def atomic_increment(column_name, by = 1)
-          # @table.client.atomicIncrement(@table.name, id.to_s, column_name, by) 
-          value_to_increment = @columns[column_name.to_s].value
-
-          raise "Value to increment (#{value_to_increment}) doesnt seem to be a number!" unless value_to_increment =~ /^\d+$/
-          raise "Argument by must be an integer" unless by.is_a? Fixnum
-
-          value_to_increment = value_to_increment.to_i
-          value_to_increment += by
-          value_to_increment = value_to_increment.to_s
-
-          mutation = Apache::Hadoop::Hbase::Thrift::Mutation.new
-          mutation.column = column_name
-          mutation.value = value_to_increment
-
-          if @table.client.mutateRow(@table.name, id.to_s, [mutation]).nil?
-            value_to_increment
-          end
+          value = @table.client.atomicIncrement(@table.name, id.to_s, column_name, by)
         end
     
         def self.populate_from_trow_result(result, connection, table_name, column_families = [])

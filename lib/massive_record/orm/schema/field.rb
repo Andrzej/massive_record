@@ -155,7 +155,8 @@ module MassiveRecord
         end
 
         def loaded_value_is_of_valid_class?(value)
-          value.nil? || value.is_a?(String) && value == @@encoded_nil_value || value_is_already_decoded?(value)
+          # TODO: remove false, it currently supports atomic increment fields, they should be read with atomic_increment("field",0)
+          value.nil? || value == false || value.is_a?(String) && value == @@encoded_nil_value || value_is_already_decoded?(value)
         end
       end
     end

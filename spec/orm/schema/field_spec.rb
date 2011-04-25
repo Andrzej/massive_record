@@ -199,7 +199,7 @@ describe MassiveRecord::ORM::Schema::Field do
     it "should raise an argument if expecting array but getting something else" do
       @subject = MassiveRecord::ORM::Schema::Field.new(:name => :status, :type => :array)
       @subject.coder = MassiveRecord::ORM::Coders::JSON.new
-      lambda { @subject.decode("false") }.should raise_error MassiveRecord::ORM::SerializationTypeMismatch
+      lambda { @subject.decode("true") }.should raise_error MassiveRecord::ORM::SerializationTypeMismatch
     end
 
     it "should raise an argument if expecting hash but getting something else" do

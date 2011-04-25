@@ -108,7 +108,7 @@ module MassiveRecord
       # But at least, we can "dynamicly" assign new attributes to this object.
       #
       def create_field_for(table_name)
-        add_field_to_column_family COLUMN_FAMILY_FOR_TABLES, table_name, :integer, :default => 0
+        add_field_to_column_family COLUMN_FAMILY_FOR_TABLES, table_name, :integer
       end
       
       #
