@@ -73,9 +73,9 @@ describe "Person which is a table" do
   end
 
   it "should decode/encode empty hashes correctly" do
-    @person.addresses = {}
+    @person.items = {}
     @person.save! :validate => false
     @person.reload
-    @person.addresses.should be_instance_of Hash
+    @person.items.should be_instance_of Hash
   end
 end

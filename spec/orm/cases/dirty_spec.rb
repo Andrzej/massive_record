@@ -117,13 +117,13 @@ describe "dirty" do
     end
 
     it "should update dirty status correctly after a reload" do
-      @person.addresses = {:something => "strage"}
+      @person.items = {:something => "strage"}
       @person.save! :validate => false
       @person.reload
-      @person.addresses = {}
+      @person.items = {}
       @person.save! :validate => false
       @person.reload
-      @person.addresses.should == {}
+      @person.items.should == {}
     end
   end
 end
