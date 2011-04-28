@@ -24,7 +24,20 @@ module MassiveRecord
           # Adding record(s) to the collection.
           #
           def <<(*records)
-            raise "TODO" #
+            save_records = proxy_owner.persisted?
+            if records.flatten.all? &:valid?
+              records.flatten.each do |record|
+                unless include? record
+                  raise_if_type_mismatch(record)
+                  proxy_target << record
+                  proxy_owner.attributes[metadata.name] = proxy_owner.send(metadata.name)
+                end
+              end
+
+              proxy_owner.save if save_records
+
+              self
+            end
           end
           alias_method :push, :<<
           alias_method :concat, :<<
@@ -91,7 +104,7 @@ module MassiveRecord
           private
 
           def find_proxy_target
-            [] # TODO - Array of records
+            proxy_owner.attributes["addresses"] || []
           end
 
 

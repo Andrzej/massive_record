@@ -18,7 +18,7 @@ class Person < MassiveRecord::ORM::Table
   references_many :test_classes, :store_in => :info
   references_many :friends, :class_name => "Person", :records_starts_from => :friends_records_starts_from_id
 
-	embeds_many :addresses
+  embeds_many :addresses, :store_in => :info
 
   validates_presence_of :name, :age
   validates_numericality_of :age, :greater_than_or_equal_to => 0

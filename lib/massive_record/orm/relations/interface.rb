@@ -90,7 +90,7 @@ module MassiveRecord
           def references_many(name, *args)
             metadata = set_up_relation('references_many', name, *args)
             create_references_many_accessors(metadata)
-					end
+          end
 
           #
           # Used to defined a relationship to other models where the other models are embedded inside of owner record.
@@ -176,6 +176,7 @@ module MassiveRecord
             redefine_method(metadata.name) do
               relation_proxy(metadata.name)
             end
+            add_field_to_column_family(metadata.store_in, metadata.name, :type => :embed)
           end
         end
 

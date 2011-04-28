@@ -4,7 +4,7 @@ module MassiveRecord
       class Field
         include ActiveModel::Validations
 
-        TYPES = [:string, :integer, :float, :boolean, :array, :hash, :date, :time]
+        TYPES = [:string, :integer, :float, :boolean, :array, :hash, :date, :time, :embed]
 
         attr_writer :default
         attr_accessor :name, :column, :type, :fields, :coder
@@ -17,7 +17,7 @@ module MassiveRecord
           errors.add(:name, :taken) if fields.try(:attribute_name_taken?, name)
         end
 
-      
+
         #
         # Creates a new field based on arguments from DSL
         # args: name, type, options
@@ -70,7 +70,7 @@ module MassiveRecord
           @default.duplicable? ? @default.dup : @default
         end
 
-        
+
         def unique_name
           raise "Can't generate a unique name as I don't have a column family!" if column_family.nil?
           [column_family.name, column].join(":")
@@ -90,8 +90,10 @@ module MassiveRecord
 
         def decode(value)
           return value if value.nil? || value_is_already_decoded?(value)
-          
+
           value = case type
+                  when :embed
+                    coder.load(value).map{|h| Address.new(h)}
                   when :boolean
                     value.blank? ? nil : !value.to_s.match(/^(true|1)$/i).nil?
                   when :date
@@ -115,6 +117,9 @@ module MassiveRecord
         end
 
         def encode(value)
+          if type == :embed
+            return coder.dump(value.map(&:attributes))
+          end
           if type == :string && !(value.nil? || value == @@encoded_nil_value)
             value
           else
@@ -134,6 +139,8 @@ module MassiveRecord
 
         def classes
           classes = case type
+                    when :embed
+                      [Array]
                     when :boolean
                       [TrueClass, FalseClass]
                     when :integer
