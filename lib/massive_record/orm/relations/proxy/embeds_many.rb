@@ -5,14 +5,16 @@ module MassiveRecord
         class EmbedsMany < Proxy
 
           def find(id)
-            raise "TODO" # TODO
+						load_proxy_target unless loaded?
+            record = proxy_target.find { |record| record.id == id }
+            raise RecordNotFound.new("Could not find #{proxy_target_class.model_name} with id=#{id}") if record.nil?
+            record
           end
 
           def limit(limit)
-            raise "TODO" # TODO
+						load_proxy_target unless loaded?
+            proxy_target.slice(0, limit)
           end
-
-
 
           def reset
             super
@@ -98,10 +100,7 @@ module MassiveRecord
             limit(1).first
           end
 
-
-
-
-         private
+        private
 
           def find_proxy_target
             (proxy_owner.attributes["addresses"] || []).map{|h| metadata.proxy_target_class.new(h)}
@@ -109,7 +108,14 @@ module MassiveRecord
 
 
           def delete_or_destroy(*records, method)
-            raise "TODO" # TODO
+            records.flatten.each do |record|
+              if include? record
+                proxy_target.delete(record)
+                #record.destroy if method.to_sym == :destroy
+              end
+						end
+						proxy_owner.attributes[metadata.name] = proxy_target.map(&:attributes)
+            proxy_owner.save if proxy_owner.persisted?
           end
 
           def can_find_proxy_target?
