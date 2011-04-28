@@ -115,7 +115,7 @@ module MassiveRecord
         end
 
         def encode(value)
-          if type == :embed && value.is_a?(Array) && value.all?{|v| v.respond_to(:attributes)}
+          if type == :embed && value.is_a?(Array) && value.all?{|v| v.respond_to?(:attributes)}
             return coder.dump(value.map(&:attributes))
           end
           if type == :string && !(value.nil? || value == @@encoded_nil_value)
