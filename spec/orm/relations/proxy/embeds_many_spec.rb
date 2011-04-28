@@ -33,7 +33,6 @@ describe TestEmbedsManyProxy do
 				it "should auto-persist proxy_target if owner has been persisted" do
 					proxy_owner.addresses << proxy_target
 					proxy_owner.save!
-					puts proxy_owner.inspect
 					subject.send(add_method, proxy_target)
 					#proxy_owner.reload
 					proxy_owner = Person.find ("person-id-1")

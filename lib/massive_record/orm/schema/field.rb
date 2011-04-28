@@ -92,8 +92,6 @@ module MassiveRecord
           return value if value.nil? || value_is_already_decoded?(value)
 
           value = case type
-                  when :embed
-                    coder.load(value).map{|h| Address.new(h)}
                   when :boolean
                     value.blank? ? nil : !value.to_s.match(/^(true|1)$/i).nil?
                   when :date
@@ -105,7 +103,7 @@ module MassiveRecord
                       value = value.to_s if value.is_a? Symbol
                       coder.load(value)
                     end
-                  when :integer, :float, :array, :hash
+                  when :integer, :float, :array, :hash, :embed
                     coder.load(value) if value.present?
                   else
                     raise "Unable to decode #{value}, class: #{value}"
@@ -117,7 +115,7 @@ module MassiveRecord
         end
 
         def encode(value)
-          if type == :embed
+          if type == :embed && value.is_a?(Array) && value.all?{|v| v.respond_to(:attributes)}
             return coder.dump(value.map(&:attributes))
           end
           if type == :string && !(value.nil? || value == @@encoded_nil_value)

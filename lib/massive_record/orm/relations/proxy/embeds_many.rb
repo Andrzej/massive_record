@@ -30,7 +30,7 @@ module MassiveRecord
                 unless include? record
                   raise_if_type_mismatch(record)
                   proxy_target << record
-                  proxy_owner.attributes[metadata.name] = proxy_owner.send(metadata.name)
+                  proxy_owner.attributes[metadata.name] = proxy_target.map(&:attributes)
                 end
               end
 
@@ -101,10 +101,10 @@ module MassiveRecord
 
 
 
-          private
+         private
 
           def find_proxy_target
-            proxy_owner.attributes["addresses"] || []
+            (proxy_owner.attributes["addresses"] || []).map{|h| metadata.proxy_target_class.new(h)}
           end
 
 
