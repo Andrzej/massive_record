@@ -141,8 +141,8 @@ module MassiveRecord
                       [Array]
                     when :boolean
                       [TrueClass, FalseClass]
-                    when :integer
-                      [Fixnum, Bignum]
+                    when :integer, :float
+                      [Fixnum, Bignum, Float]
                     else
                       klass = type.to_s.classify
                       if ::Object.const_defined?(klass)
