@@ -101,7 +101,7 @@ module MassiveRecord
                   when :string
                     if value.present?
                       value = value.to_s if value.is_a? Symbol
-                      coder.load(value)
+                      coder.load(value).to_s
                     end
                   when :integer, :float, :array, :hash, :embed
                     coder.load(value) if value.present?
