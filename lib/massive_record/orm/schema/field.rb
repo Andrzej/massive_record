@@ -101,7 +101,11 @@ module MassiveRecord
                   when :string
                     if value.present?
                       value = value.to_s if value.is_a? Symbol
-                      coder.load(value).to_s
+                      if value.is_a? Fixnum
+                        value.to_s
+                      else
+                        coder.load(value)
+                      end
                     end
                   when :integer, :float, :array, :hash, :embed
                     coder.load(value) if value.present?
@@ -110,7 +114,9 @@ module MassiveRecord
                   end
           ensure
             unless loaded_value_is_of_valid_class?(value)
-              raise SerializationTypeMismatch.new("Expected #{value} (class: #{value.class}) to be any of: #{classes.join(', ')}.")
+              if type != :string
+                raise SerializationTypeMismatch.new("Expected #{value} (class: #{value.class}) to be any of: #{classes.join(', ')}.")
+              end
             end
         end
 
